@@ -1,47 +1,39 @@
-import Navbar from './components/Navbar'
-import Hero from './components/Hero'
-import Features from './components/Features'
-import Philosophy from './components/Philosophy'
-import Protocol from './components/Protocol'
-import GetStarted from './components/GetStarted'
-import Footer from './components/Footer'
-
-// Global noise overlay — inline SVG feTurbulence at 0.045 opacity
-// eliminates flat digital gradients across the entire page
-function NoiseOverlay() {
-  return (
-    <div
-      className="pointer-events-none fixed inset-0 z-[9999]"
-      style={{ opacity: 0.045 }}
-      aria-hidden="true"
-    >
-      <svg width="100%" height="100%" xmlns="http://www.w3.org/2000/svg">
-        <filter id="sc-noise" x="0%" y="0%" width="100%" height="100%">
-          <feTurbulence
-            type="fractalNoise"
-            baseFrequency="0.65"
-            numOctaves="3"
-            stitchTiles="stitch"
-          />
-          <feColorMatrix type="saturate" values="0" />
-        </filter>
-        <rect width="100%" height="100%" filter="url(#sc-noise)" />
-      </svg>
-    </div>
-  )
-}
+import { useState } from 'react'
+import AppV1 from './AppV1'
+import AppV2 from './AppV2'
 
 export default function App() {
+  const [version, setVersion] = useState(1)
+
   return (
-    <div className="bg-[#F2F0E9] overflow-x-hidden">
-      <NoiseOverlay />
-      <Navbar />
-      <Hero />
-      <Features />
-      <Philosophy />
-      <Protocol />
-      <GetStarted />
-      <Footer />
-    </div>
+    <>
+      {version === 1 ? <AppV1 /> : <AppV2 />}
+
+      {/* Floating version toggle — always on top */}
+      <div className="fixed bottom-6 right-6 z-[99999] flex items-center gap-1 bg-[#1A1A1A]/90 backdrop-blur-xl border border-white/10 rounded-full px-3 py-2 shadow-2xl">
+        <span
+          className="text-white/35 mr-1"
+          style={{ fontFamily: '"IBM Plex Mono", monospace', fontSize: '9px', letterSpacing: '0.2em' }}
+        >
+          VERSION
+        </span>
+        {[1, 2].map((v) => (
+          <button
+            key={v}
+            onClick={() => setVersion(v)}
+            className="rounded-full px-3 py-1 transition-all duration-200"
+            style={{
+              fontFamily: '"IBM Plex Mono", monospace',
+              fontSize: '11px',
+              fontWeight: 600,
+              background: version === v ? '#CC5833' : 'transparent',
+              color: version === v ? '#F2F0E9' : 'rgba(242,240,233,0.35)',
+            }}
+          >
+            V{v}
+          </button>
+        ))}
+      </div>
+    </>
   )
 }
